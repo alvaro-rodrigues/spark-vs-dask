@@ -44,7 +44,15 @@ def k_means(data_size, spark, it):
 
         assembled_data = assemble.transform(df)
 
-        KMeans_algo = KMeans(featuresCol='features', k=3, maxIter=300, seed=42)
+        KMeans_algo = KMeans(
+            featuresCol='features',
+            k=3,
+            initMode='k-means||',
+            tol=0.0001,
+            initSteps=2,
+            maxIter=50,
+            seed=42
+        )
         KMeans_fit = KMeans_algo.fit(assembled_data)
         ans = KMeans_fit.transform(assembled_data)
         ans = ans.drop(F.col('features'))

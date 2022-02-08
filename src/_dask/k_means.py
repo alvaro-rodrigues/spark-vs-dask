@@ -51,9 +51,12 @@ def k_means(data_size, it=1):
         X = df.to_dask_array(lengths=True)
         km = dask_ml.cluster.KMeans(
             n_clusters=3,
+            init='k-means||',
+            tol=0.0001,
             init_max_iter=2,
-            random_state=42,
-            max_iter=300
+            oversampling_factor=1,
+            max_iter=50,
+            random_state=42
         )
 
         km.fit(X)

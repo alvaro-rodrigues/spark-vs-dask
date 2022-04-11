@@ -6,11 +6,13 @@ import os
 import dask
 import dask.dataframe as dd
 from dask.distributed import Client
+
 import dask_ml.cluster
 
 exec(open("./utils/utils.py").read())
 
-def self_join(data_size, it=1):
+
+def load_write(data_size, it=1):
 
     os.environ['DASK_SCHEDULER_ADDRESS'] = 'tcp://localhost:8786'
     #client = Client()
@@ -38,15 +40,14 @@ def self_join(data_size, it=1):
             'Typegoedkeuringsnummer': 'object',
             'Wielbasis': 'float64'}
 
-
         df = dd.read_csv(f'./data/data_{data_size}.csv', dtype=dtype)
 
-        ans = df.merge(df, on='Kenteken', suffixes=['_1', '_2'])
-        ans.to_csv(f"./dask_output/self_join/{data_size}", index=False)
+        ans = df
+        ans.to_csv(f"./dask_output/load_write/{data_size}", index=False)
 
         t = timeit.default_timer() - t_start
         m = memory_usage()
-        write_log('self_join', 'dask', data_size, t, m)
+        write_log('load_write', 'dask', data_size, t, m)
         del df
         del ans
         del dtype

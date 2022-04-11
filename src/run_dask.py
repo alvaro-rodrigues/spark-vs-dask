@@ -4,6 +4,7 @@ import gc
 import os
 
 from _dask import (
+    load_write,
     filter,
     group_by,
     join,
@@ -20,15 +21,11 @@ import dask_ml.cluster
 
 def run_dask(data_size, it=1):
 
-    client = Client(
-        n_workers=4,
-        processes=True,
-        threads_per_worker=4,
-        memory_limit='4GB'
-    )
+    client = Client()
 
     os.environ['DASK_SCHEDULER_ADDRESS'] = 'tcp://localhost:8786'
 
+    load_write(data_size, it)
     filter(data_size, it)
     group_by(data_size, it)
     join(data_size, it)

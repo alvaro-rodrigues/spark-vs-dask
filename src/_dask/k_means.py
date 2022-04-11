@@ -13,6 +13,7 @@ exec(open("./utils/utils.py").read())
 def k_means(data_size, it=1):
 
     os.environ['DASK_SCHEDULER_ADDRESS'] = 'tcp://localhost:8786'
+    #client = Client()
 
     for _ in range(it):
         gc.collect()

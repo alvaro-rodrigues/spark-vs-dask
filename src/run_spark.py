@@ -4,6 +4,7 @@ import gc
 import os
 
 from _spark import (
+    load_write,
     filter,
     group_by,
     join,
@@ -30,6 +31,7 @@ def run_spark(data_size, it=1):
         .getOrCreate()
     )
 
+    load_write(data_size, spark, it)
     filter(data_size, spark, it)
     group_by(data_size, spark, it)
     join(data_size, spark, it)

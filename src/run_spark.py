@@ -3,6 +3,7 @@ import psutil
 import gc
 import os
 
+
 from _spark import (
     load_write,
     filter,
@@ -21,35 +22,20 @@ from pyspark.ml.feature import VectorAssembler
 from pyspark.ml.clustering import KMeans
 
 
-def run_spark(data_size, it=1):
-    spark = (
-        SparkSession
-        .builder
-        .master('local[*]')
-        .config('spark.driver.memory', '14g')
-        .config('spark.sql.execution.arrow.pyspark.enabled', 'true')
-        .getOrCreate()
-    )
+def run_spark(data_size, task, file_type):
 
-    load_write(data_size, spark, it)
-    filter(data_size, spark, it)
-    group_by(data_size, spark, it)
-    join(data_size, spark, it)
-    self_join(data_size, spark, it)
-    sort(data_size, spark, it)
+    tasks = {
+        "load_write": load_write,
+        "filter": filter,
+        "group_by": group_by,
+        "join": join,
+        "self_join": self_join,
+        "sort": sort
+    }
 
-    spark.stop()
+    task_func = tasks.get(task)
+    task_func(data_size, file_type)
 
-def run_spark_kmeans(data_size, it=1):
-    spark = (
-        SparkSession
-        .builder
-        .master('local[*]')
-        .config('spark.driver.memory', '14g')
-        .config('spark.sql.execution.arrow.pyspark.enabled', 'true')
-        .getOrCreate()
-    )
+def run_spark_kmeans(data_size, file_type):
 
-    k_means(data_size, spark, it)
-
-    spark.stop()
+    k_means(data_size, file_type)

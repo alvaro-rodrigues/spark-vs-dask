@@ -9,7 +9,7 @@ def memory_usage():
     return process.memory_info().rss/(1024**3) # GB units
 
 
-def write_log(task, framework, data_size, time_sec, mem_gb):
+def write_log(task, framework, data_size, file_type, time_sec, mem_gb):
    csv_file = os.getenv('CSV_RESULT_FILE', "result.csv")
    time_sec = round(time_sec, 6)
    mem_gb = round(mem_gb, 6)
@@ -17,8 +17,8 @@ def write_log(task, framework, data_size, time_sec, mem_gb):
       time_sec = ""
    if math.isnan(mem_gb):
       mem_gb = ""
-   log_row = [task, framework, data_size, time_sec, mem_gb]
-   log_header = ['task', 'framework', 'data_size', 'time_sec', 'mem_gb']
+   log_row = [task, framework, data_size, file_type, time_sec, mem_gb]
+   log_header = ['task', 'framework', 'data_size', 'file_type', 'time_sec', 'mem_gb']
    if os.path.isfile(csv_file) and not(os.path.getsize(csv_file)):
       os.remove(csv_file)
    append = os.path.isfile(csv_file)

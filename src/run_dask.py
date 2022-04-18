@@ -3,6 +3,7 @@ import psutil
 import gc
 import os
 
+
 from _dask import (
     load_write,
     filter,
@@ -15,39 +16,25 @@ from _dask import (
 
 import dask
 import dask.dataframe as dd
-from dask.distributed import Client, progress
+from dask.distributed import Client, progress, LocalCluster
 import dask_ml.cluster
 
 
-def run_dask(data_size, it=1):
+def run_dask(data_size, task, file_type):
 
-    client = Client()
+    tasks = {
+        "load_write": load_write,
+        "filter": filter,
+        "group_by": group_by,
+        "join": join,
+        "self_join": self_join,
+        "sort": sort
+    }
 
-    os.environ['DASK_SCHEDULER_ADDRESS'] = 'tcp://localhost:8786'
+    task_func = tasks.get(task)
+    task_func(data_size, file_type)
 
-    load_write(data_size, it)
-    filter(data_size, it)
-    group_by(data_size, it)
-    join(data_size, it)
-    self_join(data_size, it)
-    sort(data_size, it)
+def run_dask_kmenas(data_size, file_type):
 
-    client.shutdown()
-
-
-def run_dask_kmenas(data_size, it=1):
-
-    client = Client(
-        n_workers=4,
-        processes=True,
-        threads_per_worker=4,
-        memory_limit='4GB'
-    )
-
-    os.environ['DASK_SCHEDULER_ADDRESS'] = 'tcp://localhost:8786'
-
-    k_means(data_size, it)
-
-    client.shutdown()
-
+    k_means(data_size)
     
